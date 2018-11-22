@@ -1,4 +1,4 @@
-angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', function ($rootScope) {
+angular.module('mapboxgl-directive').directive('glStyle', function () {
 	function mapboxGlStyleDirectiveLink (scope, element, attrs, controller) {
 		if (!controller) {
 			throw new Error('Invalid angular-mapboxgl-directive controller');
@@ -25,7 +25,7 @@ angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', functio
 
 						map.on('styledata', function (event) {
 							if (!styleChanged) {
-								$rootScope.$broadcast('mapboxglMap:styleChanged', {
+								scope.$broadcast('mapboxglMap:styleChanged', {
 									map: map,
 									newStyle: style,
 									oldStyle: oldStyle
@@ -36,7 +36,7 @@ angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', functio
 						});
 
 						/*map.on('style.load', function () {
-							$rootScope.$broadcast('mapboxglMap:styleChanged', {
+							scope.$broadcast('mapboxglMap:styleChanged', {
 								map: map,
 								newStyle: style,
 								oldStyle: oldStyle
@@ -57,4 +57,4 @@ angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', functio
 	};
 
 	return directive;
-}]);
+});
