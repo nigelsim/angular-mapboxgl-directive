@@ -3,6 +3,10 @@
 
   angular.module('app', ['mapboxgl-directive'])
 
+  .config(['interactiveLayersProvider', function (interactiveLayersProvider) {
+    interactiveLayersProvider.addLayer('background');
+  }])
+
   .run([function () {
     mapboxgl.accessToken = 'pk.eyJ1IjoibmFpbWlrYW4iLCJhIjoiY2lraXJkOXFjMDA0OXdhbTYzNTE0b2NtbiJ9.O64XgZQHNHcV2gwNLN2a0Q';
   }])
@@ -53,7 +57,11 @@
       }
     });
 
-    $scope.$on('mapboxglMap:load', function (event, mapboxglMapEvent) {
+    $scope.$on('mapboxglMap:click', function (event, mapboxglMapEvent) {
+      console.log(event, mapboxglMapEvent);
+    });
+
+    $scope.$on('mapboxglMap:mousemove', function (event, mapboxglMapEvent) {
       console.log(event, mapboxglMapEvent);
     });
 
@@ -6536,6 +6544,11 @@
         type: 'circle',
         source: 'earthquakes',
         filter: ['has', 'point_count'],
+        events: {
+          onClick: function (map, feature, features) {
+            console.log(map, feature, features);
+          }
+        },
         paint: {
           'circle-color': {
             property: 'point_count',
@@ -6579,9 +6592,6 @@
         }
       }
     ];
-
-
-
 
 
 
