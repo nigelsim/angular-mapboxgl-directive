@@ -1,4 +1,4 @@
-angular.module('mapboxgl-directive').factory('MarkersManager', ['Utils', 'mapboxglConstants', '$rootScope', '$compile', function (Utils, mapboxglConstants, $rootScope, $compile) {
+angular.module('mapboxgl-directive').factory('MarkersManager', ['Utils', 'mapboxglConstants', '$compile', function (Utils, mapboxglConstants, $compile) {
   function MarkersManager (mapInstance, popupManger) {
     this.markersCreated = [];
     this.mapInstance = mapInstance;

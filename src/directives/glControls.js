@@ -1,4 +1,4 @@
-angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Utils', 'mapboxglControlsAvailables', '$timeout', function ($rootScope, Utils, mapboxglControlsAvailables, $timeout) {
+angular.module('mapboxgl-directive').directive('glControls', ['Utils', 'mapboxglControlsAvailables', '$timeout', function (Utils, mapboxglControlsAvailables, $timeout) {
 	function mapboxGlControlsDirectiveLink (scope, element, attrs, controller) {
 		if (!controller) {
 			throw new Error('Invalid angular-mapboxgl-directive controller');
@@ -121,7 +121,7 @@ angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Uti
 										listener.on(eachControlEvent, function (event) {
 											var eventName = eachControlAvailable.eventsExposedName + ':' + eachControlEvent;
 
-											$rootScope.$broadcast(eventName, event);
+											scope.$broadcast(eventName, event);
 										});
 									});
 								}
@@ -170,7 +170,7 @@ angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Uti
 										listener.on(eachCustomControlEvent, function (event) {
 											var eventName = 'mapboxgl:' + eachCustomControl.name + ':' + eachCustomControlEvent;
 
-											$rootScope.$broadcast(eventName, event);
+											scope.$broadcast(eventName, event);
 										});
 									});
 
@@ -184,7 +184,7 @@ angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Uti
 						}
           }
 
-					$rootScope.$broadcast('mapboxglMap:controlsRendered', _controlsCreated);
+					scope.$broadcast('mapboxglMap:controlsRendered', _controlsCreated);
         }
 			});
 		});

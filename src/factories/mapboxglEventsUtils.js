@@ -1,4 +1,4 @@
-angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', ['$rootScope', function ($rootScope) {
+angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', function () {
   var eventsAvailables = [
     'resize',
     'webglcontextlost',
@@ -44,10 +44,10 @@ angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', ['$rootScope
     'pitchend'
   ];
 
-  function exposeMapEvents (map) {
+  function exposeMapEvents (map, scope) {
     eventsAvailables.map(function (eachEvent) {
       map.on(eachEvent, function (event) {
-        $rootScope.$applyAsync($rootScope.$broadcast('mapboxglMap:' + eachEvent, event));
+        scope.$applyAsync(scope.$broadcast('mapboxglMap:' + eachEvent, event));
       });
     });
   }
@@ -57,4 +57,4 @@ angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', ['$rootScope
 	};
 
 	return mapboxglEventsUtils;
-}]);
+});

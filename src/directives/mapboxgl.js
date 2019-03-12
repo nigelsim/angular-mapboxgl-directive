@@ -157,7 +157,7 @@ angular.module('mapboxgl-directive', []).directive('mapboxgl', ['$q', 'Utils', '
 
       mapboxglMapsData.addMap(scope.mapboxglMapId, mapboxGlMap);
 
-      mapboxglEventsUtils.exposeMapEvents(mapboxGlMap);
+      mapboxglEventsUtils.exposeMapEvents(mapboxGlMap, scope.$parent.$parent);
       controller.getAnimationManager().initAnimationSystem();
 
       //scope.isLoading = true;

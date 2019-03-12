@@ -1,4 +1,4 @@
-angular.module('mapboxgl-directive').factory('SourcesManager', ['Utils', 'mapboxglConstants', '$q', '$rootScope', function (Utils, mapboxglConstants, $q, $rootScope) {
+angular.module('mapboxgl-directive').factory('SourcesManager', ['Utils', 'mapboxglConstants', '$q', function (Utils, mapboxglConstants, $q) {
   function SourcesManager (mapInstance, animationManager) {
     this.sourcesCreated = [];
     this.mapInstance = mapInstance;

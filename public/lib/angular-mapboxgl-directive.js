@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*!
-*  angular-mapboxgl-directive 0.46.0 2018-04-22
+*  angular-mapboxgl-directive 0.46.0 2019-03-12
 *  An AngularJS directive for Mapbox GL
 *  git: git+https://github.com/Naimikan/angular-mapboxgl-directive.git
 */
@@ -165,7 +165,7 @@ angular.module('mapboxgl-directive', []).directive('mapboxgl', ['$q', 'Utils', '
 
       mapboxglMapsData.addMap(scope.mapboxglMapId, mapboxGlMap);
 
-      mapboxglEventsUtils.exposeMapEvents(mapboxGlMap);
+      mapboxglEventsUtils.exposeMapEvents(mapboxGlMap, scope.$parent.$parent);
       controller.getAnimationManager().initAnimationSystem();
 
       //scope.isLoading = true;
@@ -803,7 +803,7 @@ angular.module('mapboxgl-directive').factory('LayersManager', ['Utils', 'mapboxg
   return LayersManager;
 }]);
 
-angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', ['$rootScope', function ($rootScope) {
+angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', function () {
   var eventsAvailables = [
     'resize',
     'webglcontextlost',
@@ -849,10 +849,10 @@ angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', ['$rootScope
     'pitchend'
   ];
 
-  function exposeMapEvents (map) {
+  function exposeMapEvents (map, scope) {
     eventsAvailables.map(function (eachEvent) {
       map.on(eachEvent, function (event) {
-        $rootScope.$applyAsync($rootScope.$broadcast('mapboxglMap:' + eachEvent, event));
+        scope.$applyAsync(scope.$broadcast('mapboxglMap:' + eachEvent, event));
       });
     });
   }
@@ -862,7 +862,7 @@ angular.module('mapboxgl-directive').factory('mapboxglEventsUtils', ['$rootScope
 	};
 
 	return mapboxglEventsUtils;
-}]);
+});
 
 angular.module('mapboxgl-directive').factory('mapboxglImageUtils', ['Utils', 'mapboxglConstants', function (Utils, mapboxglConstants) {
 	function createImageByObject (map, object) {
@@ -996,7 +996,7 @@ angular.module('mapboxgl-directive').factory('mapboxglVideoUtils', ['Utils', 'ma
   return mapboxglVideoUtils;
 }]);
 
-angular.module('mapboxgl-directive').factory('MarkersManager', ['Utils', 'mapboxglConstants', '$rootScope', '$compile', function (Utils, mapboxglConstants, $rootScope, $compile) {
+angular.module('mapboxgl-directive').factory('MarkersManager', ['Utils', 'mapboxglConstants', '$compile', function (Utils, mapboxglConstants, $compile) {
   function MarkersManager (mapInstance, popupManger) {
     this.markersCreated = [];
     this.mapInstance = mapInstance;
@@ -1217,7 +1217,7 @@ angular.module('mapboxgl-directive').factory('PopupsManager', ['Utils', 'mapboxg
   return PopupsManager;
 }]);
 
-angular.module('mapboxgl-directive').factory('SourcesManager', ['Utils', 'mapboxglConstants', '$q', '$rootScope', function (Utils, mapboxglConstants, $q, $rootScope) {
+angular.module('mapboxgl-directive').factory('SourcesManager', ['Utils', 'mapboxglConstants', '$q', function (Utils, mapboxglConstants, $q) {
   function SourcesManager (mapInstance, animationManager) {
     this.sourcesCreated = [];
     this.mapInstance = mapInstance;
@@ -1792,7 +1792,7 @@ angular.module('mapboxgl-directive').directive('glClasses', [function () {
 	return directive;
 }]);
 
-angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Utils', 'mapboxglControlsAvailables', '$timeout', function ($rootScope, Utils, mapboxglControlsAvailables, $timeout) {
+angular.module('mapboxgl-directive').directive('glControls', ['Utils', 'mapboxglControlsAvailables', '$timeout', function (Utils, mapboxglControlsAvailables, $timeout) {
 	function mapboxGlControlsDirectiveLink (scope, element, attrs, controller) {
 		if (!controller) {
 			throw new Error('Invalid angular-mapboxgl-directive controller');
@@ -1915,7 +1915,7 @@ angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Uti
 										listener.on(eachControlEvent, function (event) {
 											var eventName = eachControlAvailable.eventsExposedName + ':' + eachControlEvent;
 
-											$rootScope.$broadcast(eventName, event);
+											scope.$broadcast(eventName, event);
 										});
 									});
 								}
@@ -1964,7 +1964,7 @@ angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Uti
 										listener.on(eachCustomControlEvent, function (event) {
 											var eventName = 'mapboxgl:' + eachCustomControl.name + ':' + eachCustomControlEvent;
 
-											$rootScope.$broadcast(eventName, event);
+											scope.$broadcast(eventName, event);
 										});
 									});
 
@@ -1978,7 +1978,7 @@ angular.module('mapboxgl-directive').directive('glControls', ['$rootScope', 'Uti
 						}
           }
 
-					$rootScope.$broadcast('mapboxglMap:controlsRendered', _controlsCreated);
+					scope.$broadcast('mapboxglMap:controlsRendered', _controlsCreated);
         }
 			});
 		});
@@ -2754,7 +2754,7 @@ angular.module('mapboxgl-directive').directive('glSources', ['SourcesManager', '
   return directive;
 }]);
 
-angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', function ($rootScope) {
+angular.module('mapboxgl-directive').directive('glStyle', function () {
 	function mapboxGlStyleDirectiveLink (scope, element, attrs, controller) {
 		if (!controller) {
 			throw new Error('Invalid angular-mapboxgl-directive controller');
@@ -2781,7 +2781,7 @@ angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', functio
 
 						map.on('styledata', function (event) {
 							if (!styleChanged) {
-								$rootScope.$broadcast('mapboxglMap:styleChanged', {
+								scope.$broadcast('mapboxglMap:styleChanged', {
 									map: map,
 									newStyle: style,
 									oldStyle: oldStyle
@@ -2792,7 +2792,7 @@ angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', functio
 						});
 
 						/*map.on('style.load', function () {
-							$rootScope.$broadcast('mapboxglMap:styleChanged', {
+							scope.$broadcast('mapboxglMap:styleChanged', {
 								map: map,
 								newStyle: style,
 								oldStyle: oldStyle
@@ -2813,7 +2813,7 @@ angular.module('mapboxgl-directive').directive('glStyle', ['$rootScope', functio
 	};
 
 	return directive;
-}]);
+});
 
 angular.module('mapboxgl-directive').directive('glVideo', ['mapboxglVideoUtils', function (mapboxglVideoUtils) {
 	// ToDo: Check
